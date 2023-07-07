@@ -6,3 +6,4 @@ pub(crate) mod utils;
 
 // Public Modules
 pub mod context;
+pub mod error;
