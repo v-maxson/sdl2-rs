@@ -1,5 +1,6 @@
 [package]
 name = "sdl2-rs"
+description = "A safe interface to SDL2."
 version = "0.0.0"
 edition = "2021"
 
