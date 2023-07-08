@@ -51,7 +51,7 @@ impl SdlContext {
         }
 
         #[cfg(feature = "log")] debug!("Calling 'SDL_QuitSubSystem({:?})'", subsystem);
-        if unsafe { SDL_InitSubSystem(SDL_INIT_TIMER) == 0 } {
+        if unsafe { SDL_InitSubSystem(subsystem as _) == 0 } {
             initialized.store(true, Ordering::SeqCst);
 
             Ok(SdlSubsystem(Default::default(), SdlSubsystemFlag::Timer))
