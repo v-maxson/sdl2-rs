@@ -15,7 +15,7 @@ pub(crate) static SENSOR_INITIALIZED: AtomicBool = AtomicBool::new(false);
 
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
-pub enum Subsystem {
+pub enum SdlSubsystemFlag {
     Timer = SDL_INIT_TIMER,
     Audio = SDL_INIT_AUDIO,
     Video = SDL_INIT_VIDEO,
@@ -26,24 +26,46 @@ pub enum Subsystem {
     Sensor = SDL_INIT_SENSOR
 }
 
-pub struct SdlSubsystem<T: markers::SdlSubsystemMarker>(pub(crate) PhantomData<T>, pub(crate) Subsystem);
+impl SdlSubsystemFlag {
+    /// Returns true if the subsystem associated with this flag is initialized.
+    pub fn initialized(&self) -> bool {
+        let initialized = match self {
+            SdlSubsystemFlag::Timer => &TIMER_INITIALIZED,
+            SdlSubsystemFlag::Audio => &AUDIO_INITIALIZED,
+            SdlSubsystemFlag::Video => &VIDEO_INITIALIZED,
+            SdlSubsystemFlag::Joystick => &JOYSTICK_INITIALIZED,
+            SdlSubsystemFlag::Haptic => &HAPTIC_INITIALIZED,
+            SdlSubsystemFlag::GameController => &GAME_CONTROLLER_INITIALIZED,
+            SdlSubsystemFlag::Events => &EVENTS_INITIALIZED,
+            SdlSubsystemFlag::Sensor => &SENSOR_INITIALIZED,
+        };
+
+        initialized.load(Ordering::SeqCst)
+    }
+
+    /// Returns a reference to the [`AtomicBool`] associated with this flag.
+    pub(crate) fn initialized_raw(&self) -> &AtomicBool {
+        match self {
+            SdlSubsystemFlag::Timer => &TIMER_INITIALIZED,
+            SdlSubsystemFlag::Audio => &AUDIO_INITIALIZED,
+            SdlSubsystemFlag::Video => &VIDEO_INITIALIZED,
+            SdlSubsystemFlag::Joystick => &JOYSTICK_INITIALIZED,
+            SdlSubsystemFlag::Haptic => &HAPTIC_INITIALIZED,
+            SdlSubsystemFlag::GameController => &GAME_CONTROLLER_INITIALIZED,
+            SdlSubsystemFlag::Events => &EVENTS_INITIALIZED,
+            SdlSubsystemFlag::Sensor => &SENSOR_INITIALIZED,
+        }
+    }
+}
+
+pub struct SdlSubsystem<T: markers::SdlSubsystemMarker>(pub(crate) PhantomData<T>, pub(crate) SdlSubsystemFlag);
 
 impl<T: markers::SdlSubsystemMarker> Drop for SdlSubsystem<T> {
     fn drop(&mut self) {
-        let initialized = match self.1 {
-            Subsystem::Timer => &TIMER_INITIALIZED,
-            Subsystem::Audio => &AUDIO_INITIALIZED,
-            Subsystem::Video => &VIDEO_INITIALIZED,
-            Subsystem::Joystick => &JOYSTICK_INITIALIZED,
-            Subsystem::Haptic => &HAPTIC_INITIALIZED,
-            Subsystem::GameController => &GAME_CONTROLLER_INITIALIZED,
-            Subsystem::Events => &EVENTS_INITIALIZED,
-            Subsystem::Sensor => &SENSOR_INITIALIZED,
-        };
+        let initialized = self.1.initialized_raw();
         initialized.store(false, Ordering::SeqCst);
 
-        #[cfg(feature = "log")]
-        debug!("Calling 'SDL_QuitSubSystem([SdlSubsystem<T>])'");
+        #[cfg(feature = "log")] debug!("Calling 'SDL_QuitSubSystem({:?})'", self.1);
         unsafe {
             SDL_QuitSubSystem(self.1 as _)
         }

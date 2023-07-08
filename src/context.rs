@@ -1,4 +1,4 @@
-use crate::{sys::*, error::SdlError, utils::get_sys_error, subsystems::{SdlSubsystem, markers::{SdlSubsystemMarker, Timer}, TIMER_INITIALIZED, Subsystem}};
+use crate::{sys::*, error::SdlError, utils::get_sys_error, subsystems::{SdlSubsystem, markers::{SdlSubsystemMarker, Timer}, TIMER_INITIALIZED, SdlSubsystemFlag, AUDIO_INITIALIZED, VIDEO_INITIALIZED, JOYSTICK_INITIALIZED, HAPTIC_INITIALIZED, GAME_CONTROLLER_INITIALIZED, EVENTS_INITIALIZED, SENSOR_INITIALIZED}};
 use std::{sync::atomic::{AtomicBool, Ordering}, marker::PhantomData};
 
 pub(crate) static INITIALIZED: AtomicBool = AtomicBool::new(false);
@@ -43,20 +43,26 @@ impl SdlContext {
         }
     }
 
-    /// Initializes the timer subsystem.
-    #[doc(alias = "SDL_InitSubSystem(SDL_INIT_TIMER)")]
-    pub fn timer(&self) -> Result<SdlSubsystem<Timer>, SdlError> {
-        if TIMER_INITIALIZED.load(Ordering::SeqCst) {
+    fn init<T: SdlSubsystemMarker>(&self, subsystem: SdlSubsystemFlag) -> Result<SdlSubsystem<T>, SdlError> {
+        let initialized = subsystem.initialized_raw();
+
+        if initialized.load(Ordering::SeqCst) {
             return Err(SdlError::AlreadyInitialized);
         }
 
-        #[cfg(feature = "log")] debug!("Calling 'SDL_InitSubSystem(SDL_INIT_TIMER)'");
+        #[cfg(feature = "log")] debug!("Calling 'SDL_QuitSubSystem({:?})'", subsystem);
         if unsafe { SDL_InitSubSystem(SDL_INIT_TIMER) == 0 } {
-            TIMER_INITIALIZED.store(true, Ordering::SeqCst);
+            initialized.store(true, Ordering::SeqCst);
 
-            Ok(SdlSubsystem(Default::default(), Subsystem::Timer))
+            Ok(SdlSubsystem(Default::default(), SdlSubsystemFlag::Timer))
         } else {
             Err(SdlError::SysError(get_sys_error().unwrap()))
         }
+    }
+
+    /// Initializes the timer subsystem.
+    #[doc(alias = "SDL_InitSubSystem(SDL_INIT_TIMER)")]
+    pub fn timer(&self) -> Result<SdlSubsystem<Timer>, SdlError> {
+        self.init(SdlSubsystemFlag::Timer)
     }
 }
