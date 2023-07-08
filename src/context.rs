@@ -61,6 +61,10 @@ impl SdlContext {
     }
 
     /// Initializes the timer subsystem.
+    /// 
+    /// ### Errors
+    /// - [`SdlError::AlreadyInitialized`]
+    /// - [`SdlError::SysError`]
     #[doc(alias = "SDL_InitSubSystem(SDL_INIT_TIMER)")]
     #[inline]
     pub fn timer(&self) -> Result<SdlSubsystem<Timer>, SdlError> {
