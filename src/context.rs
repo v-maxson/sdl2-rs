@@ -62,6 +62,7 @@ impl SdlContext {
 
     /// Initializes the timer subsystem.
     #[doc(alias = "SDL_InitSubSystem(SDL_INIT_TIMER)")]
+    #[inline]
     pub fn timer(&self) -> Result<SdlSubsystem<Timer>, SdlError> {
         self.init(SdlSubsystemFlag::Timer)
     }
