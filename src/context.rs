@@ -25,6 +25,7 @@ impl SdlContext {
     /// ### Errors
     /// - [`SdlError::AlreadyInitialized`]
     /// - [`SdlError::SysError`]
+    #[doc(alias = "SDL_Init")]
     pub fn new() -> Result<Self, SdlError> {
         if INITIALIZED.load(Ordering::SeqCst) {
             return Err(SdlError::AlreadyInitialized)
