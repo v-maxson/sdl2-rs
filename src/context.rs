@@ -13,6 +13,8 @@ impl Drop for SdlContext {
     fn drop(&mut self) {
         INITIALIZED.store(false, Ordering::SeqCst);        
 
+        #[cfg(feature = "log")]
+        debug!("Calling 'SDL_Quit' via SdlContext drop.");
         unsafe {
             SDL_Quit();
         }
@@ -31,6 +33,7 @@ impl SdlContext {
             return Err(SdlError::AlreadyInitialized)
         }
 
+        #[cfg(feature = "log")] debug!("Calling 'SDL_Init(0)'");
         if unsafe { SDL_Init(0) == 0 } {
             INITIALIZED.store(true, Ordering::SeqCst);
 
@@ -47,6 +50,7 @@ impl SdlContext {
             return Err(SdlError::AlreadyInitialized);
         }
 
+        #[cfg(feature = "log")] debug!("Calling 'SDL_InitSubSystem(SDL_INIT_TIMER)'");
         if unsafe { SDL_InitSubSystem(SDL_INIT_TIMER) == 0 } {
             TIMER_INITIALIZED.store(true, Ordering::SeqCst);
 

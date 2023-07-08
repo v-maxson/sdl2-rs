@@ -42,6 +42,8 @@ impl<T: markers::SdlSubsystemMarker> Drop for SdlSubsystem<T> {
         };
         initialized.store(false, Ordering::SeqCst);
 
+        #[cfg(feature = "log")]
+        debug!("Calling 'SDL_QuitSubSystem([SdlSubsystem<T>])'");
         unsafe {
             SDL_QuitSubSystem(self.1 as _)
         }

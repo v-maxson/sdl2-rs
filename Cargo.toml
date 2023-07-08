@@ -4,7 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [features]
-default = ["bundled"]
+default = ["bundled", "log"]
+log = []
 
 # sdl2-sys features.
 bundled = ["sdl2-sys/bundled"]
@@ -25,6 +26,11 @@ derive_more = "0.99.17"
 ffi-convert = "0.6.1"
 ffi-convert-derive = "0.6.1"
 libc = "0.2.142"
+log = "0.4.17"
 sdl2-sys = "0.35.2"
 semver = "1.0.17"
 thiserror = "1.0.40"
+
+[dev-dependencies]
+ctor = "0.2.0"
+simplelog = "0.12.1"
