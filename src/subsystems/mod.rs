@@ -4,6 +4,7 @@ use crate::sys::*;
 pub mod markers;
 
 pub mod timer;
+pub mod audio;
 
 pub(crate) static TIMER_INITIALIZED: AtomicBool = AtomicBool::new(false);
 pub(crate) static AUDIO_INITIALIZED: AtomicBool = AtomicBool::new(false);
@@ -59,16 +60,26 @@ impl SdlSubsystemFlag {
     }
 }
 
-pub struct SdlSubsystem<T: markers::SdlSubsystemMarker>(pub(crate) PhantomData<T>, pub(crate) SdlSubsystemFlag);
+pub struct SdlSubsystem<T: markers::SdlSubsystemMarker> {
+    pub(crate) t: PhantomData<T>,
+    pub(crate) subsystem: SdlSubsystemFlag,
+    pub(crate) quitter: Option<unsafe extern "C" fn()>
+}
 
 impl<T: markers::SdlSubsystemMarker> Drop for SdlSubsystem<T> {
     fn drop(&mut self) {
-        let initialized = self.1.initialized_raw();
+        let initialized = self.subsystem.initialized_raw();
         initialized.store(false, Ordering::SeqCst);
 
-        #[cfg(feature = "log")] debug!("Calling 'SDL_QuitSubSystem({:?})'", self.1);
-        unsafe {
-            SDL_QuitSubSystem(self.1 as _)
+        match self.quitter {
+            Some(quitter) => unsafe {
+                #[cfg(feature = "log")] debug!("Calling 'SDL_{:?}Quit()' via SdlSubsystem drop.", self.subsystem);
+                quitter();
+            },
+            Option::None => unsafe {
+                #[cfg(feature = "log")] debug!("Calling 'SDL_QuitSubSystem({:?})' via SdlSubsystem drop.", self.subsystem);
+                SDL_QuitSubSystem(self.subsystem as _);
+            }
         }
     }
 }
