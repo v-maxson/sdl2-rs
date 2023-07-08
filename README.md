@@ -11,6 +11,10 @@ A safe interface to [SDL2][SDL2].
 > In fact, this library is built on top of the [`sdl2-sys`][sdl2-sys] bindings that
 > [`sdl2`][sdl2] generates.
 
+> Note: Until a `1.0` release is reached, this library will likely undergo major API changes
+> without warning. Also, until basic API structure is fully laid out and in a state that I
+> am happy with, this library will remain at version `0.0.0`.
+
 ### Features 
 - All features from the [`sdl2-sys`][sdl2-sys] crate are inherited.
   - `bundled`
