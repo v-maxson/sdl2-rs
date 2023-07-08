@@ -1,6 +1,6 @@
 use std::time::Duration;
 use super::{SdlSubsystem, markers::Timer};
-use crate::{SdlContext, sys::*};
+use crate::sys::*;
 
 impl SdlSubsystem<Timer> {
 

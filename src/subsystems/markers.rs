@@ -1,5 +1,3 @@
-use crate::sys::*;
-
 /// Marker for SDL subsystems.
 pub trait SdlSubsystemMarker {}
 

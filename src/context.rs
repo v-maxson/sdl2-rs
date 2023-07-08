@@ -1,4 +1,4 @@
-use crate::{sys::*, error::SdlError, utils::get_sys_error, subsystems::{SdlSubsystem, markers::{SdlSubsystemMarker, Timer}, TIMER_INITIALIZED, SdlSubsystemFlag, AUDIO_INITIALIZED, VIDEO_INITIALIZED, JOYSTICK_INITIALIZED, HAPTIC_INITIALIZED, GAME_CONTROLLER_INITIALIZED, EVENTS_INITIALIZED, SENSOR_INITIALIZED}};
+use crate::{sys::*, error::SdlError, utils::get_sys_error, subsystems::{SdlSubsystem, markers::{SdlSubsystemMarker, Timer}, SdlSubsystemFlag}};
 use std::{sync::atomic::{AtomicBool, Ordering}, marker::PhantomData};
 
 pub(crate) static INITIALIZED: AtomicBool = AtomicBool::new(false);

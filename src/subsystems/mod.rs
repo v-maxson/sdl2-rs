@@ -1,7 +1,8 @@
 use std::{marker::PhantomData, sync::atomic::{AtomicBool, Ordering}};
-use crate::{sys::*, error::SdlError, utils::get_sys_error};
+use crate::sys::*;
 
 pub mod markers;
+
 pub mod timer;
 
 pub(crate) static TIMER_INITIALIZED: AtomicBool = AtomicBool::new(false);
