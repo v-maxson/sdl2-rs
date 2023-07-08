@@ -73,7 +73,7 @@ impl<T: markers::SdlSubsystemMarker> Drop for SdlSubsystem<T> {
 
         match self.quitter {
             Some(quitter) => unsafe {
-                #[cfg(feature = "log")] debug!("Calling 'SDL_{:?}Quit()' via SdlSubsystem drop.", self.subsystem);
+                #[cfg(feature = "log")] debug!("Calling 'SDL_{:?}Quit' via SdlSubsystem drop.", self.subsystem);
                 quitter();
             },
             Option::None => unsafe {
