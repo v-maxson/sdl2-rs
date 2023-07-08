@@ -45,7 +45,7 @@ impl SdlSubsystem<Audio> {
     }
 
     /// Get the name of the currently initialized audio driver.
-    #[doc = "SDL_GetCurrentAudioDriver"]
+    #[doc(alias = "SDL_GetCurrentAudioDriver")]
     pub fn current_driver_name(&self) -> String {
         #[cfg(feature = "log")] debug!("Calling 'SDL_GetCurrentAudioDriver'");
         let result = unsafe {
