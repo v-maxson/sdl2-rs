@@ -30,7 +30,7 @@ impl SdlContext {
     #[doc(alias = "SDL_Init")]
     pub fn new() -> Result<Self, SdlError> {
         if INITIALIZED.load(Ordering::SeqCst) {
-            return Err(SdlError::AlreadyInitialized)
+            return Err(SdlError::AlreadyInitialized(String::from("SDL2")))
         }
 
         #[cfg(feature = "log")] debug!("Calling 'SDL_Init(0)'");
@@ -47,7 +47,7 @@ impl SdlContext {
         let initialized = subsystem.initialized_raw();
 
         if initialized.load(Ordering::SeqCst) {
-            return Err(SdlError::AlreadyInitialized);
+            return Err(SdlError::AlreadyInitialized(format!("The {:?} subsystem", subsystem)));
         }
 
         #[cfg(feature = "log")] debug!("Calling 'SDL_QuitSubSystem({:?})'", subsystem);
