@@ -1,15 +1,15 @@
+use std::time::Duration;
 use super::{SdlSubsystem, markers::Timer};
-use crate::context::SdlContext;
-use crate::{sys::*, error::SdlError, utils::get_sys_error};
+use crate::{SdlContext, sys::*};
 
 impl SdlSubsystem<Timer> {
 
-    /// Get the number of milliseconds since the [`SdlContext`] was initialized.
+    /// Get a [`Duration`] representing the amount of time since the [`SdlContext`] was initialized.
     /// 
     /// This value wraps if the program runs for more that ~49 days.
     #[doc(alias = "SDL_GetTicks")]
-    pub fn get_ticks(&self) -> u32 {
-        unsafe { SDL_GetTicks() }
+    pub fn get_ticks(&self) -> Duration {
+        Duration::from_millis(unsafe { SDL_GetTicks() } as _)
     }
 
     /// Get the current value of the high resolution counter.
