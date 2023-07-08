@@ -32,3 +32,4 @@ A safe interface to [SDL2][SDL2].
   - Enables debug logging via the [`log`][log] crate.
   - Note: The [`log`][log] crate requires an implementation
     to write logs to console, files, etc.
+  - Another Note: This crate logs with EVERY call to foreign code.
