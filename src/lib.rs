@@ -24,7 +24,7 @@ mod tests {
 
         timer.delay(3000);
 
-        println!("Time Since SdlContext initialization: {}ms", timer.get_ticks());
+        println!("Time Since SdlContext initialization: {}ms", timer.get_ticks().as_millis());
 
         Ok(())
     }
