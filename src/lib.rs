@@ -7,7 +7,7 @@ pub use sdl2_sys as sys;
 pub(crate) mod utils;
 
 // Public Modules
-pub mod context;
-pub mod error;
+mod context; pub use context::*;
+mod error; pub use error::*;
 pub mod subsystems;
 pub mod version;
