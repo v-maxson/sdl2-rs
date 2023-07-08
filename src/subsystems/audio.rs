@@ -29,10 +29,10 @@ impl SdlSubsystem<Audio> {
     /// 
     /// Valid `index` values are within the range of `0` to `driver_count() - 1`.
     #[doc(alias = "SDL_GetAudioDriver")]
-    pub fn get_driver_name(&self, index: i32) -> Option<String> {
+    pub fn get_driver_name(&self, index: u32) -> Option<String> {
         #[cfg(feature = "log")] debug!("Calling 'SDL_GetAudioDriver'");
         let result = unsafe {
-            SDL_GetAudioDriver(index)
+            SDL_GetAudioDriver(index as _)
         };
 
         if !result.is_null() {
@@ -42,6 +42,26 @@ impl SdlSubsystem<Audio> {
         } else {
             Option::None
         }
+    }
+
+    /// Returns a [`Vec<String>`] containing all available driver names.
+    /// 
+    /// Note: This slice does not contain the final "dummy" string.
+    /// 
+    /// Internally, this calls [`driver_count`] and then calls
+    /// [`get_driver_name`] in a loop.
+    /// 
+    /// ### Errors
+    /// - [`SdlError::SysError`]
+    pub fn driver_names(&self) -> Result<Vec<String>, SdlError> {
+        let driver_count = self.driver_count() - 1;
+        let mut vec = vec![];
+
+        for i in (0..driver_count) {
+            vec.push(self.get_driver_name(i).unwrap())
+        }
+
+        Ok(vec)
     }
 
     /// Get the name of the currently initialized audio driver.
