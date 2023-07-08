@@ -30,3 +30,5 @@ A safe interface to [SDL2][SDL2].
   - `gfx`
 - `log`
   - Enables debug logging via the [`log`][log] crate.
+  - Note: The [`log`][log] crate requires an implementation
+    to write logs to console, files, etc.
