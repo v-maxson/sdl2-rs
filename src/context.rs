@@ -1,4 +1,4 @@
-use crate::{sys::*, error::SdlError, utils::get_sys_error};
+use crate::{sys::*, error::SdlError, utils::get_sys_error, subsystems::{SdlSubsystem, markers::{SdlSubsystemMarker, Timer}, TIMER_INITIALIZED, Subsystem}};
 use std::{sync::atomic::{AtomicBool, Ordering}, marker::PhantomData};
 
 pub(crate) static INITIALIZED: AtomicBool = AtomicBool::new(false);
@@ -35,6 +35,22 @@ impl SdlContext {
             INITIALIZED.store(true, Ordering::SeqCst);
 
             Ok(Self(PhantomData::default()))
+        } else {
+            Err(SdlError::SysError(get_sys_error().unwrap()))
+        }
+    }
+
+    /// Initializes the timer subsystem.
+    #[doc(alias = "SDL_InitSubSystem(SDL_INIT_TIMER)")]
+    pub fn timer(&self) -> Result<SdlSubsystem<Timer>, SdlError> {
+        if TIMER_INITIALIZED.load(Ordering::SeqCst) {
+            return Err(SdlError::AlreadyInitialized);
+        }
+
+        if unsafe { SDL_InitSubSystem(SDL_INIT_TIMER) == 0 } {
+            TIMER_INITIALIZED.store(true, Ordering::SeqCst);
+
+            Ok(SdlSubsystem(Default::default(), Subsystem::Timer))
         } else {
             Err(SdlError::SysError(get_sys_error().unwrap()))
         }
