@@ -38,12 +38,12 @@ impl SdlSubsystem<Timer> {
         unsafe { SDL_Delay(ms) }
     }
 
-    /// This function is not currently implemented and will __panic__ if called.
+    /// This function is not currently unimplemented and will __panic__ if called.
     /// See [`SDL_AddTimer`](https://github.com/libsdl-org/SDL/blob/SDL2/include/SDL_timer.h).
     #[doc(alias = "SDL_AddTimer")]
     pub fn add_timer(&self) { todo!() }
 
-    /// This function is not currently implemented and will __panic__ if called.
+    /// This function is not currently unimplemented and will __panic__ if called.
     /// See [`SDL_RemoveTimer`](https://github.com/libsdl-org/SDL/blob/SDL2/include/SDL_timer.h).
     #[doc(alias = "SDL_RemoveTimer")]
     pub fn remove_timer(&self) { todo!() }
