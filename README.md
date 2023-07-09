@@ -6,12 +6,12 @@
 # sdl2-rs
 A safe interface to [SDL2][SDL2].
 
-> Disclaimer: This library is mainly created as part of my portfolio. For an alternative
+> **Disclaimer**: This library is mainly created as part of my portfolio. For an alternative
 > that is well maintained and tested, see the [`sdl2`][sdl2] crate. 
 > In fact, this library is built on top of the [`sdl2-sys`][sdl2-sys] bindings that
 > [`sdl2`][sdl2] generates.
 
-> Note: Until a `1.0` release is reached, this library will likely undergo major API changes
+> **Note**: Until a `1.0` release is reached, this library will likely undergo major API changes
 > without warning. Also, until basic API structure is fully laid out and in a state that I
 > am happy with, this library will remain at version `0.0.0`.
 
