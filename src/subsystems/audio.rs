@@ -53,7 +53,7 @@ impl SdlSubsystem<Audio> {
     /// 
     /// ### Errors
     /// - [`SdlError::SysError`]
-    pub fn driver_names(&self) -> Result<Vec<String>, SdlError> {
+    pub fn get_driver_names(&self) -> Result<Vec<String>, SdlError> {
         let driver_count = self.driver_count() - 1;
         let mut vec = vec![];
 
