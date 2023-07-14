@@ -84,7 +84,7 @@ impl SdlSubsystem<Audio> {
     /// 
     /// Returns [`Option::None`] if the number of built-in audio devices cannot be determined.
     #[doc(alias = "SDL_GetNumAudioDevices")]
-    pub fn audio_device_count(&self, _device_type: AudioDeviceType) -> Option<u32> {
+    pub fn device_count(&self, _device_type: AudioDeviceType) -> Option<u32> {
         #[cfg(feature = "log")] debug!("Calling 'SDL_GetNumAudioDevices'");
         let result = unsafe {
             SDL_GetNumAudioDevices(_device_type as _)
@@ -99,12 +99,12 @@ impl SdlSubsystem<Audio> {
 
     /// Get the name of the audio driver specified by `index`.
     /// 
-    /// Valid `index` values are within the range of `0` to `audio_device_count() - 1`.
+    /// Valid `index` values are within the range of `0` to `device_count() - 1`.
     /// 
     /// ### Errors 
     /// - [`SdlError::SysError`]
     #[doc(alias = "SDL_GetAudioDeviceName")]
-    pub fn get_audio_device_name(&self, index: i32, device_type: AudioDeviceType) -> Result<String, SdlError> {
+    pub fn get_device_name(&self, index: i32, device_type: AudioDeviceType) -> Result<String, SdlError> {
         let result = unsafe {
             SDL_GetAudioDeviceName(index, device_type as _)
         };
@@ -114,6 +114,24 @@ impl SdlSubsystem<Audio> {
         } else {
             Err(SdlError::SysError(get_sys_error().unwrap()))
         }
+    }
+
+    /// Returns a [`Vec<String>`] containing all available audio device names.
+    /// 
+    /// Internally, this calls [`device_count`] and then calls
+    /// [`get_device_name`] in a loop.
+    /// 
+    /// ### Errors
+    /// - [`SdlError::SysError`]
+    pub fn get_device_names(&self, device_type: AudioDeviceType) -> Result<Vec<String>, SdlError> {
+        let device_count = self.device_count(device_type).unwrap_or(0);
+        let mut vec = vec![];
+
+        for i in (0..device_count) {
+            vec.push(self.get_device_name(i as _, device_type).unwrap())
+        }
+
+        Ok(vec)
     }
 
     /// This function is not currently unimplemented and will __panic__ if called.
